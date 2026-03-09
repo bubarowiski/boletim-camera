@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boletim de C√¢mera</title>
+  <title>Boletim de Câmera</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
@@ -517,18 +517,18 @@
 <body>
 
 <header>
-  <span class="logo">üé¨</span>
+  <span class="logo">🎬</span>
   <div>
-    <h1>Boletim de C√¢mera</h1>
-    <p>Registro de takes para produ√ß√£o de v√≠deo</p>
+    <h1>Boletim de Câmera</h1>
+    <p>Registro de takes para produção de vídeo</p>
   </div>
 </header>
 
 <main>
   <!-- Project title -->
   <div class="project-bar">
-    <label for="projectTitle">T√≠tulo do V√≠deo</label>
-    <input type="text" id="projectTitle" placeholder="Nome do projeto / v√≠deo..." />
+    <label for="projectTitle">Título do Vídeo</label>
+    <input type="text" id="projectTitle" placeholder="Nome do projeto / vídeo..." />
   </div>
 
   <!-- Form -->
@@ -538,7 +538,7 @@
       <div class="field">
         <label>Arquivo</label>
         <div class="stepper">
-          <button type="button" onclick="stepNum('fArquivo', -1)" title="Diminuir">‚àí</button>
+          <button type="button" onclick="stepNum('fArquivo', -1)" title="Diminuir">−</button>
           <input class="step-val" type="text" id="fArquivo" value="1" />
           <button type="button" onclick="stepNum('fArquivo', +1)" title="Aumentar">+</button>
         </div>
@@ -546,7 +546,7 @@
       <div class="field">
         <label>Cena</label>
         <div class="stepper">
-          <button type="button" onclick="stepNum('fCena', -1)" title="Diminuir">‚àí</button>
+          <button type="button" onclick="stepNum('fCena', -1)" title="Diminuir">−</button>
           <input class="step-val" type="text" id="fCena" value="1" />
           <button type="button" onclick="stepNum('fCena', +1)" title="Aumentar">+</button>
         </div>
@@ -554,15 +554,15 @@
       <div class="field">
         <label>Plano</label>
         <div class="stepper">
-          <button type="button" onclick="stepAlpha('fPlano', -1)" title="Letra anterior">‚àí</button>
+          <button type="button" onclick="stepAlpha('fPlano', -1)" title="Letra anterior">−</button>
           <input class="step-val" type="text" id="fPlano" value="A" maxlength="2" />
-          <button type="button" onclick="stepAlpha('fPlano', +1)" title="Pr√≥xima letra">+</button>
+          <button type="button" onclick="stepAlpha('fPlano', +1)" title="Próxima letra">+</button>
         </div>
       </div>
       <div class="field">
         <label>Take</label>
         <div class="stepper">
-          <button type="button" onclick="stepNum('fTake', -1)" title="Diminuir">‚àí</button>
+          <button type="button" onclick="stepNum('fTake', -1)" title="Diminuir">−</button>
           <input class="step-val" type="text" id="fTake" value="1" />
           <button type="button" onclick="stepNum('fTake', +1)" title="Aumentar">+</button>
         </div>
@@ -580,7 +580,7 @@
     </div>
     <div class="form-grid">
       <div class="field desc-row" style="grid-column: 1 / -1">
-        <label>Descri√ß√£o / Observa√ß√£o</label>
+        <label>Descrição / Observação</label>
         <textarea id="fDesc" placeholder="Notas sobre o take, problemas, ajustes..."></textarea>
       </div>
     </div>
@@ -591,15 +591,15 @@
     <div class="table-header">
       <h2>Takes Registrados</h2>
       <div class="table-actions">
-        <button class="btn-pdf" onclick="generatePDF()">‚¨á Exportar PDF</button>
+        <button class="btn-pdf" onclick="generatePDF()">⬇ Exportar PDF</button>
         <button class="btn-clear" onclick="clearAll()">Limpar Tudo</button>
       </div>
     </div>
 
     <div id="tableWrap">
       <div class="empty-state" id="emptyState">
-        <div class="icon">üéûÔ∏è</div>
-        <p>Nenhum take registrado ainda.<br>Preencha o formul√°rio acima e clique em <strong>Adicionar</strong>.</p>
+        <div class="icon">🎞️</div>
+        <p>Nenhum take registrado ainda.<br>Preencha o formulário acima e clique em <strong>Adicionar</strong>.</p>
       </div>
       <table id="takesTable" style="display:none">
         <thead>
@@ -610,7 +610,7 @@
             <th>Plano</th>
             <th>Take</th>
             <th>Status</th>
-            <th>Descri√ß√£o</th>
+            <th>Descrição</th>
             <th></th>
           </tr>
         </thead>
@@ -692,8 +692,8 @@
         <td>${escHtml(t.plano)}</td>
         <td>${escHtml(t.take)}</td>
         <td><span class="tag-${t.status.toLowerCase()}">${t.status}</span></td>
-        <td><span class="desc-text">${escHtml(t.desc) || '<em style="color:#444">‚Äî</em>'}</span></td>
-        <td><button class="btn-del" onclick="deleteTake(${t.id})" title="Remover">‚úï</button></td>
+        <td><span class="desc-text">${escHtml(t.desc) || '<em style="color:#444">—</em>'}</span></td>
+        <td><button class="btn-del" onclick="deleteTake(${t.id})" title="Remover">✕</button></td>
       </tr>
     `).join('');
   }
@@ -773,7 +773,7 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
-    const project = document.getElementById('projectTitle').value.trim() || 'Sem t√≠tulo';
+    const project = document.getElementById('projectTitle').value.trim() || 'Sem título';
     const dateStr = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
     const timeStr = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 
@@ -789,7 +789,7 @@
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(232, 200, 74);
-    doc.text('BOLETIM DE C√ÇMERA', 14, 13);
+    doc.text('BOLETIM DE CÂMERA', 14, 13);
 
     doc.setFontSize(11);
     doc.setTextColor(200, 200, 200);
@@ -799,7 +799,7 @@
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(140, 140, 140);
-    doc.text(`Gerado em ${dateStr} √†s ${timeStr}`, 283, 10, { align: 'right' });
+    doc.text(`Gerado em ${dateStr} às ${timeStr}`, 283, 10, { align: 'right' });
 
     // Stats row
     const okCount  = takes.filter(t => t.status === 'OK').length;
@@ -820,12 +820,12 @@
       t.plano,
       t.take,
       t.status,
-      t.desc || '‚Äî'
+      t.desc || '—'
     ]);
 
     doc.autoTable({
       startY: 36,
-      head: [['#', 'Arquivo', 'Cena', 'Plano', 'Take', 'Status', 'Descri√ß√£o / Observa√ß√£o']],
+      head: [['#', 'Arquivo', 'Cena', 'Plano', 'Take', 'Status', 'Descrição / Observação']],
       body: rows,
       theme: 'grid',
       styles: {
@@ -875,7 +875,7 @@
     const pageH = doc.internal.pageSize.height;
     doc.setFontSize(7);
     doc.setTextColor(80, 80, 80);
-    doc.text('Boletim de C√¢mera', 14, pageH - 6);
+    doc.text('Boletim de Câmera', 14, pageH - 6);
     doc.text(project, 148, pageH - 6, { align: 'center' });
     doc.text(dateStr, 283, pageH - 6, { align: 'right' });
 
