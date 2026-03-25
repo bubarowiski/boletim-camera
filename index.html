@@ -539,7 +539,7 @@
         <label>Arquivo</label>
         <div class="stepper">
           <button type="button" onclick="stepNum('fArquivo', -1)" title="Diminuir">−</button>
-          <input class="step-val" type="text" id="fArquivo" value="1" />
+          <input class="step-val" type="text" id="fArquivo" value="1" inputmode="numeric" />
           <button type="button" onclick="stepNum('fArquivo', +1)" title="Aumentar">+</button>
         </div>
       </div>
@@ -547,7 +547,7 @@
         <label>Cena</label>
         <div class="stepper">
           <button type="button" onclick="stepNum('fCena', -1)" title="Diminuir">−</button>
-          <input class="step-val" type="text" id="fCena" value="1" />
+          <input class="step-val" type="text" id="fCena" value="1" inputmode="numeric" />
           <button type="button" onclick="stepNum('fCena', +1)" title="Aumentar">+</button>
         </div>
       </div>
@@ -563,7 +563,7 @@
         <label>Take</label>
         <div class="stepper">
           <button type="button" onclick="stepNum('fTake', -1)" title="Diminuir">−</button>
-          <input class="step-val" type="text" id="fTake" value="1" />
+          <input class="step-val" type="text" id="fTake" value="1" inputmode="numeric" />
           <button type="button" onclick="stepNum('fTake', +1)" title="Aumentar">+</button>
         </div>
       </div>
@@ -579,6 +579,10 @@
       <button class="btn-add" onclick="addTake()">+ Adicionar</button>
     </div>
     <div class="form-grid">
+      <div class="field" style="grid-column: 1 / -1">
+        <label>Nome do Vídeo</label>
+        <input type="text" id="fVideo" placeholder="Nome do vídeo para este take..." />
+      </div>
       <div class="field desc-row" style="grid-column: 1 / -1">
         <label>Descrição / Observação</label>
         <textarea id="fDesc" placeholder="Notas sobre o take, problemas, ajustes..."></textarea>
@@ -605,6 +609,7 @@
         <thead>
           <tr>
             <th>#</th>
+            <th>Vídeo</th>
             <th>Arquivo</th>
             <th>Cena</th>
             <th>Plano</th>
@@ -655,7 +660,11 @@
 
   document.getElementById('projectTitle').addEventListener('input', e => {
     localStorage.setItem('boletim_project', e.target.value);
+    document.getElementById('fVideo').value = e.target.value;
   });
+
+  // Pre-populate fVideo with project title
+  if (savedTitle) document.getElementById('fVideo').value = savedTitle;
 
   function save() {
     localStorage.setItem('boletim_takes', JSON.stringify(takes));
@@ -687,6 +696,7 @@
     body.innerHTML = takes.map((t, i) => `
       <tr>
         <td style="color:var(--muted);font-size:.75rem">${i + 1}</td>
+        <td><span class="desc-text">${escHtml(t.video) || '<em style="color:#444">—</em>'}</span></td>
         <td>${escHtml(t.arquivo)}</td>
         <td><strong>${escHtml(t.cena)}</strong></td>
         <td>${escHtml(t.plano)}</td>
@@ -713,6 +723,7 @@
     const take  = document.getElementById('fTake').value.trim();
     const status = document.querySelector('input[name="status"]:checked').value;
     const desc  = document.getElementById('fDesc').value.trim();
+    const video = document.getElementById('fVideo').value.trim();
 
     if (!arquivo || !cena || !plano || !take) {
       toast('Preencha Arquivo, Cena, Plano e Take antes de adicionar.', true);
@@ -720,7 +731,7 @@
     }
 
     counter++;
-    takes.push({ id: counter, arquivo, cena, plano, take, status, desc });
+    takes.push({ id: counter, arquivo, cena, plano, take, status, desc, video });
     save();
     render();
 
@@ -779,21 +790,27 @@
 
     // Header background
     doc.setFillColor(26, 26, 26);
-    doc.rect(0, 0, 297, 30, 'F');
+    doc.rect(0, 0, 297, 38, 'F');
 
     // Accent line
     doc.setFillColor(232, 200, 74);
-    doc.rect(0, 30, 297, 1.5, 'F');
+    doc.rect(0, 38, 297, 1.5, 'F');
 
     // Title
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
+    doc.setFontSize(16);
     doc.setTextColor(232, 200, 74);
-    doc.text('BOLETIM DE CÂMERA', 14, 13);
+    doc.text('BOLETIM DE CÂMERA', 14, 11);
 
-    doc.setFontSize(11);
+    // Date of diária (below title)
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(232, 200, 74);
+    doc.text(dateStr, 14, 20);
+
+    doc.setFontSize(10);
     doc.setTextColor(200, 200, 200);
-    doc.text(project, 14, 22);
+    doc.text(project, 14, 30);
 
     // Date/time top right
     doc.setFont('helvetica', 'normal');
@@ -815,6 +832,7 @@
     // Table
     const rows = takes.map((t, i) => [
       i + 1,
+      t.video || '—',
       t.arquivo,
       t.cena,
       t.plano,
@@ -824,8 +842,8 @@
     ]);
 
     doc.autoTable({
-      startY: 36,
-      head: [['#', 'Arquivo', 'Cena', 'Plano', 'Take', 'Status', 'Descrição / Observação']],
+      startY: 43,
+      head: [['#', 'Vídeo', 'Arquivo', 'Cena', 'Plano', 'Take', 'Status', 'Descrição / Observação']],
       body: rows,
       theme: 'grid',
       styles: {
@@ -849,15 +867,16 @@
       },
       columnStyles: {
         0: { cellWidth: 10, halign: 'center', textColor: [100,100,100] },
-        1: { cellWidth: 20, halign: 'center' },
-        2: { cellWidth: 22, fontStyle: 'bold' },
-        3: { cellWidth: 22 },
-        4: { cellWidth: 18, halign: 'center' },
-        5: { cellWidth: 22, halign: 'center' },
-        6: { cellWidth: 'auto', textColor: [160, 160, 160], fontStyle: 'italic' },
+        1: { cellWidth: 'auto', textColor: [160, 160, 160] },
+        2: { cellWidth: 18, halign: 'center' },
+        3: { cellWidth: 20, fontStyle: 'bold' },
+        4: { cellWidth: 18 },
+        5: { cellWidth: 15, halign: 'center' },
+        6: { cellWidth: 20, halign: 'center' },
+        7: { cellWidth: 'auto', textColor: [160, 160, 160], fontStyle: 'italic' },
       },
       didParseCell: function(data) {
-        if (data.column.index === 5 && data.section === 'body') {
+        if (data.column.index === 6 && data.section === 'body') {
           const val = data.cell.raw;
           if (val === 'OK') {
             data.cell.styles.textColor = [76, 175, 80];
