@@ -832,7 +832,7 @@
 
     doc.autoTable({
       startY: 37,
-      head: [['#', 'Vídeo', 'Arquivo', 'Cena', 'Plano', 'Take', 'Status', 'Descrição / Observação']],
+      head: [['#', 'Vídeo', 'File', 'Cena', 'Plano', 'Take', 'Status', 'Descrição / Observação']],
       body: rows,
       theme: 'grid',
       styles: {
@@ -892,6 +892,13 @@
   }
 
   render();
+
+  // Prevent pinch-to-zoom on all browsers (iOS Safari ignores user-scalable=no)
+  document.addEventListener('touchmove', function(e) {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+  document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
 </script>
 </body>
 </html>
