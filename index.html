@@ -21,6 +21,27 @@
       --text: #e8e8e8;
       --muted: #888;
       --radius: 10px;
+      --row-border: #1f1f1f;
+      --row-hover: #1e1e1e;
+      --step-hover: #2e2e2e;
+      --step-active: #383838;
+      --step-focus: #2a2a2a;
+      --placeholder: #555;
+    }
+
+    :root.light {
+      --bg: #f2f2f2;
+      --surface: #ffffff;
+      --surface2: #ebebeb;
+      --border: #d0d0d0;
+      --text: #1a1a1a;
+      --muted: #777;
+      --row-border: #e2e2e2;
+      --row-hover: #f5f5f5;
+      --step-hover: #e0e0e0;
+      --step-active: #d4d4d4;
+      --step-focus: #e8e8e8;
+      --placeholder: #bbb;
     }
 
     body {
@@ -40,6 +61,22 @@
       align-items: center;
       gap: 14px;
     }
+
+    #themeToggle {
+      margin-left: auto;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s;
+    }
+    #themeToggle:hover { border-color: var(--accent); }
 
     .logo {
       font-size: 28px;
@@ -195,7 +232,7 @@
 
     .field input::placeholder,
     .field textarea::placeholder {
-      color: #555;
+      color: var(--placeholder);
     }
 
     .field textarea {
@@ -232,8 +269,8 @@
       user-select: none;
     }
 
-    .stepper button:hover { background: #2e2e2e; color: var(--accent); }
-    .stepper button:active { background: #383838; }
+    .stepper button:hover { background: var(--step-hover); color: var(--accent); }
+    .stepper button:active { background: var(--step-active); }
 
     .stepper .step-val {
       flex: 1;
@@ -253,7 +290,7 @@
     }
 
     .stepper .step-val:focus {
-      background: #2a2a2a;
+      background: var(--step-focus);
     }
 
     /* Status toggle */
@@ -411,11 +448,11 @@
     }
 
     tbody tr {
-      border-bottom: 1px solid #1f1f1f;
+      border-bottom: 1px solid var(--row-border);
       transition: background .15s;
     }
 
-    tbody tr:hover { background: #1e1e1e; }
+    tbody tr:hover { background: var(--row-hover); }
     tbody tr:last-child { border-bottom: none; }
 
     td {
@@ -523,6 +560,7 @@
     <h1>Boletim de Câmera</h1>
     <p>Registro de takes para produção de vídeo</p>
   </div>
+  <button id="themeToggle" title="Alternar tema" onclick="toggleTheme()">☀️</button>
 </header>
 
 <main>
@@ -632,6 +670,20 @@
 
 <script>
   const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  // ---- Theme ----
+  function toggleTheme() {
+    const isLight = document.documentElement.classList.toggle('light');
+    document.getElementById('themeToggle').textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('boletim_theme', isLight ? 'light' : 'dark');
+  }
+
+  (function applyTheme() {
+    if (localStorage.getItem('boletim_theme') === 'light') {
+      document.documentElement.classList.add('light');
+      document.getElementById('themeToggle').textContent = '🌙';
+    }
+  })();
 
   function stepNum(id, delta) {
     const el = document.getElementById(id);
@@ -768,6 +820,10 @@
   });
 
   // ---- PDF Generation ----
+  function stripEmoji(str) {
+    return String(str || '').replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim() || '—';
+  }
+
   function generatePDF() {
     if (takes.length === 0) {
       toast('Nenhum take para exportar.', true);
@@ -822,13 +878,13 @@
     // Table
     const rows = takes.map((t, i) => [
       i + 1,
-      t.video || '—',
-      t.arquivo,
-      t.cena,
-      t.plano,
-      t.take,
+      stripEmoji(t.video),
+      stripEmoji(t.arquivo),
+      stripEmoji(t.cena),
+      stripEmoji(t.plano),
+      stripEmoji(t.take),
       t.status,
-      t.desc || '—'
+      stripEmoji(t.desc)
     ]);
 
     doc.autoTable({
