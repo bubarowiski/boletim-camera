@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Boletim de Câmera</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -774,19 +774,20 @@
     }
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
     const project = document.getElementById('projectTitle').value.trim() || 'Sem título';
-    const dateStr = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const _d = new Date();
+    const dateStr = `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,'0')}-${String(_d.getDate()).padStart(2,'0')}`;
     const timeStr = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 
     // Header background
     doc.setFillColor(26, 26, 26);
-    doc.rect(0, 0, 297, 32, 'F');
+    doc.rect(0, 0, 210, 32, 'F');
 
     // Accent line
     doc.setFillColor(232, 200, 74);
-    doc.rect(0, 32, 297, 1.5, 'F');
+    doc.rect(0, 32, 210, 1.5, 'F');
 
     // Title
     doc.setFont('helvetica', 'bold');
@@ -804,18 +805,18 @@
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(140, 140, 140);
-    doc.text(`Gerado em ${dateStr} às ${timeStr}`, 283, 10, { align: 'right' });
+    doc.text(`Gerado em ${dateStr} às ${timeStr}`, 196, 10, { align: 'right' });
 
     // Stats row
     const okCount  = takes.filter(t => t.status === 'OK').length;
     const ngCount  = takes.length - okCount;
     doc.setFontSize(8);
     doc.setTextColor(140, 140, 140);
-    doc.text(`Total: ${takes.length}`, 283, 18, { align: 'right' });
+    doc.text(`Total: ${takes.length}`, 196, 18, { align: 'right' });
     doc.setTextColor(76, 175, 80);
-    doc.text(`OK: ${okCount}`, 265, 18, { align: 'right' });
+    doc.text(`OK: ${okCount}`, 178, 18, { align: 'right' });
     doc.setTextColor(244, 67, 54);
-    doc.text(`NG: ${ngCount}`, 248, 18, { align: 'right' });
+    doc.text(`NG: ${ngCount}`, 162, 18, { align: 'right' });
 
     // Table
     const rows = takes.map((t, i) => [
@@ -836,8 +837,8 @@
       theme: 'grid',
       styles: {
         font: 'helvetica',
-        fontSize: 9,
-        cellPadding: 4,
+        fontSize: 8,
+        cellPadding: 3,
         textColor: [220, 220, 220],
         lineColor: [50, 50, 50],
         lineWidth: 0.3,
@@ -847,20 +848,20 @@
         fillColor: [36, 36, 36],
         textColor: [140, 140, 140],
         fontStyle: 'bold',
-        fontSize: 7.5,
+        fontSize: 7,
         halign: 'left',
       },
       alternateRowStyles: {
         fillColor: [30, 30, 30],
       },
       columnStyles: {
-        0: { cellWidth: 10, halign: 'center', textColor: [100,100,100] },
-        1: { cellWidth: 'auto', textColor: [160, 160, 160] },
-        2: { cellWidth: 18, halign: 'center' },
-        3: { cellWidth: 20, fontStyle: 'bold' },
-        4: { cellWidth: 18 },
-        5: { cellWidth: 15, halign: 'center' },
-        6: { cellWidth: 20, halign: 'center' },
+        0: { cellWidth: 8,  halign: 'center', textColor: [100,100,100] },
+        1: { cellWidth: 38, textColor: [160, 160, 160] },
+        2: { cellWidth: 14, halign: 'center' },
+        3: { cellWidth: 14, fontStyle: 'bold', halign: 'center' },
+        4: { cellWidth: 14, halign: 'center' },
+        5: { cellWidth: 12, halign: 'center' },
+        6: { cellWidth: 16, halign: 'center' },
         7: { cellWidth: 'auto', textColor: [160, 160, 160], fontStyle: 'italic' },
       },
       didParseCell: function(data) {
@@ -883,7 +884,7 @@
     doc.setFontSize(7);
     doc.setTextColor(80, 80, 80);
     doc.text('Boletim de Câmera', 14, pageH - 6);
-    doc.text(dateStr, 283, pageH - 6, { align: 'right' });
+    doc.text(dateStr, 196, pageH - 6, { align: 'right' });
 
     const filename = `boletim_${project.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-]/g,'')}_${dateStr.replace(/\//g,'-')}.pdf`;
     doc.save(filename);
