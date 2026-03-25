@@ -579,10 +579,6 @@
       <button class="btn-add" onclick="addTake()">+ Adicionar</button>
     </div>
     <div class="form-grid">
-      <div class="field" style="grid-column: 1 / -1">
-        <label>Nome do Vídeo</label>
-        <input type="text" id="fVideo" placeholder="Nome do vídeo para este take..." />
-      </div>
       <div class="field desc-row" style="grid-column: 1 / -1">
         <label>Descrição / Observação</label>
         <textarea id="fDesc" placeholder="Notas sobre o take, problemas, ajustes..."></textarea>
@@ -660,11 +656,7 @@
 
   document.getElementById('projectTitle').addEventListener('input', e => {
     localStorage.setItem('boletim_project', e.target.value);
-    document.getElementById('fVideo').value = e.target.value;
   });
-
-  // Pre-populate fVideo with project title
-  if (savedTitle) document.getElementById('fVideo').value = savedTitle;
 
   function save() {
     localStorage.setItem('boletim_takes', JSON.stringify(takes));
@@ -723,7 +715,7 @@
     const take  = document.getElementById('fTake').value.trim();
     const status = document.querySelector('input[name="status"]:checked').value;
     const desc  = document.getElementById('fDesc').value.trim();
-    const video = document.getElementById('fVideo').value.trim();
+    const video = document.getElementById('projectTitle').value.trim();
 
     if (!arquivo || !cena || !plano || !take) {
       toast('Preencha Arquivo, Cena, Plano e Take antes de adicionar.', true);
@@ -790,27 +782,23 @@
 
     // Header background
     doc.setFillColor(26, 26, 26);
-    doc.rect(0, 0, 297, 38, 'F');
+    doc.rect(0, 0, 297, 32, 'F');
 
     // Accent line
     doc.setFillColor(232, 200, 74);
-    doc.rect(0, 38, 297, 1.5, 'F');
+    doc.rect(0, 32, 297, 1.5, 'F');
 
     // Title
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.setTextColor(232, 200, 74);
-    doc.text('BOLETIM DE CÂMERA', 14, 11);
+    doc.text('BOLETIM DE CÂMERA', 14, 14);
 
     // Date of diária (below title)
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.setTextColor(232, 200, 74);
-    doc.text(dateStr, 14, 20);
-
-    doc.setFontSize(10);
-    doc.setTextColor(200, 200, 200);
-    doc.text(project, 14, 30);
+    doc.text(dateStr, 14, 25);
 
     // Date/time top right
     doc.setFont('helvetica', 'normal');
@@ -842,7 +830,7 @@
     ]);
 
     doc.autoTable({
-      startY: 43,
+      startY: 37,
       head: [['#', 'Vídeo', 'Arquivo', 'Cena', 'Plano', 'Take', 'Status', 'Descrição / Observação']],
       body: rows,
       theme: 'grid',
@@ -895,7 +883,6 @@
     doc.setFontSize(7);
     doc.setTextColor(80, 80, 80);
     doc.text('Boletim de Câmera', 14, pageH - 6);
-    doc.text(project, 148, pageH - 6, { align: 'center' });
     doc.text(dateStr, 283, pageH - 6, { align: 'right' });
 
     const filename = `boletim_${project.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\-]/g,'')}_${dateStr.replace(/\//g,'-')}.pdf`;
