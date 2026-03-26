@@ -820,9 +820,8 @@
   });
 
   // ---- PDF Generation ----
-  function stripEmoji(str) {
-    // Helvetica supports only Latin-1 (0x00–0xFF); remove anything outside that range
-    return String(str || '').replace(/[^\x00-\xFF]/g, '').trim() || '—';
+  function pdfText(str) {
+    return String(str || '').trim() || '—';
   }
 
   function generatePDF() {
@@ -879,13 +878,13 @@
     // Table
     const rows = takes.map((t, i) => [
       i + 1,
-      stripEmoji(t.video),
-      stripEmoji(t.arquivo),
-      stripEmoji(t.cena),
-      stripEmoji(t.plano),
-      stripEmoji(t.take),
+      pdfText(t.video),
+      pdfText(t.arquivo),
+      pdfText(t.cena),
+      pdfText(t.plano),
+      pdfText(t.take),
       t.status,
-      stripEmoji(t.desc)
+      pdfText(t.desc)
     ]);
 
     doc.autoTable({
@@ -923,6 +922,11 @@
         7: { cellWidth: 'auto', textColor: [100, 100, 100], fontStyle: 'italic' },
       },
       didParseCell: function(data) {
+        // Center specific column headers: File(2), Cena(3), Plano(4), Status(6)
+        if (data.section === 'head' && [2, 3, 4, 6].includes(data.column.index)) {
+          data.cell.styles.halign = 'center';
+        }
+        // Color OK/NG in body
         if (data.column.index === 6 && data.section === 'body') {
           const val = data.cell.raw;
           if (val === 'OK') {
