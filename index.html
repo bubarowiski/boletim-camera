@@ -821,7 +821,8 @@
 
   // ---- PDF Generation ----
   function stripEmoji(str) {
-    return String(str || '').replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim() || '—';
+    // Helvetica supports only Latin-1 (0x00–0xFF); remove anything outside that range
+    return String(str || '').replace(/[^\x00-\xFF]/g, '').trim() || '—';
   }
 
   function generatePDF() {
@@ -896,30 +897,30 @@
         font: 'helvetica',
         fontSize: 8,
         cellPadding: 3,
-        textColor: [220, 220, 220],
-        lineColor: [50, 50, 50],
+        textColor: [30, 30, 30],
+        lineColor: [200, 200, 200],
         lineWidth: 0.3,
-        fillColor: [26, 26, 26],
+        fillColor: [255, 255, 255],
       },
       headStyles: {
-        fillColor: [36, 36, 36],
-        textColor: [140, 140, 140],
+        fillColor: [240, 240, 240],
+        textColor: [80, 80, 80],
         fontStyle: 'bold',
         fontSize: 7,
         halign: 'left',
       },
       alternateRowStyles: {
-        fillColor: [30, 30, 30],
+        fillColor: [248, 248, 248],
       },
       columnStyles: {
-        0: { cellWidth: 8,  halign: 'center', textColor: [100,100,100] },
-        1: { cellWidth: 38, textColor: [160, 160, 160] },
+        0: { cellWidth: 8,  halign: 'center', textColor: [150,150,150] },
+        1: { cellWidth: 38, textColor: [80, 80, 80] },
         2: { cellWidth: 14, halign: 'center' },
         3: { cellWidth: 14, fontStyle: 'bold', halign: 'center' },
         4: { cellWidth: 14, halign: 'center' },
         5: { cellWidth: 12, halign: 'center' },
         6: { cellWidth: 16, halign: 'center' },
-        7: { cellWidth: 'auto', textColor: [160, 160, 160], fontStyle: 'italic' },
+        7: { cellWidth: 'auto', textColor: [100, 100, 100], fontStyle: 'italic' },
       },
       didParseCell: function(data) {
         if (data.column.index === 6 && data.section === 'body') {
